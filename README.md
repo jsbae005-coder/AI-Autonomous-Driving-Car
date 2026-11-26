@@ -1,59 +1,95 @@
-# AI Autonomous Driving Car
+# DeepCobot Camera-Based Autonomous Line-Following Robot
 
-**Simulation-first rebuild of a HuskyLens-based line-following robotics project.**
+**EIE-Makers Project · STM (Science Technology Makers)**  
+Robotics · Embedded Systems · Computer Vision · Control
 
-This repository separates the historical project description from newly developed and testable software. The original EIE-Makers project was described as an Arduino-based vehicle using HuskyLens for line tracking, with forward, turn, stop, and direction-correction behaviour. Its original source code and hardware records are no longer available.
+A robotics project focused on improving the driving stability of an experimental-kit autonomous vehicle. The team used a UBION DeepCobot platform and Raspberry Pi camera to perceive the driving path, calculate steering corrections, and complete autonomous driving on the prepared course.
 
-The current repository is therefore a **rebuild in progress**, not a claim that the original firmware has been recovered or that new algorithms have already been validated on a physical car.
+The original project source files are no longer available. This repository therefore contains a documented software reconstruction and a reproducible, hardware-independent control test suite. The Python modules are not represented as the original DeepCobot firmware.
 
-## Project goals
+## Project at a glance
 
-- Build a modular line-following control system.
-- Explore bounded PID control and recovery behaviour.
-- Validate software logic in a deterministic simulator before hardware tests.
-- Add Arduino firmware only after the exact board, motor driver, wiring, and HuskyLens communication settings are confirmed.
-- Publish reproducible tests and measured results.
+| Item | Description |
+|---|---|
+| Project | Experimental-kit AI autonomous vehicle driving-stability improvement |
+| Platform | UBION DeepCobot |
+| Visual sensor | Raspberry Pi camera |
+| Core task | Camera-based path tracking and autonomous driving |
+| Control focus | Steering correction and stable path following |
+| Team | STM (Science Technology Makers) |
+| Domain | Robotics, embedded systems, computer vision, control |
+
+## Key outcomes
+
+- Completed autonomous driving demonstration on the prepared course.
+- Used Raspberry Pi camera input for visual path tracking.
+- Integrated visual path position with steering behaviour.
+- Iteratively adjusted driving behaviour to improve stability.
+
+**Hardware clarification:** The final implementation used a Raspberry Pi camera. HuskyLens and ultrasonic sensing were not used in the final build.
 
 ## Repository structure
 
-| Path | Purpose |
-|---|---|
-| `simulation/` | Hardware-independent control experiments |
-| `tests/` | Automated software tests |
-| `docs/architecture.md` | System boundaries and design decisions |
-| `docs/hardware-validation.md` | Hardware identification and safe bring-up checklist |
-| `firmware/` | Reserved for board-specific embedded firmware |
+    .
+    ├── control/
+    │   └── line_follower.py       # Reconstructed path-mask to steering pipeline
+    ├── simulation/
+    │   └── line_following.py      # Abstract closed-loop PID simulation
+    ├── tests/
+    │   ├── test_line_follower.py  # Perception/control unit tests
+    │   └── test_line_following.py # PID and simulation tests
+    ├── docs/
+    │   ├── architecture.md
+    │   ├── project-report.md
+    │   └── validation.md
+    └── .github/workflows/
+        └── python-tests.yml
 
-## Current status
+## Run locally
 
-- [x] Repository created
-- [x] Initial project documentation
-- [x] Simulation-first architecture documented
-- [x] Initial bounded PID and abstract vehicle model
-- [x] Initial automated tests
-- [ ] Confirm exact Arduino board and motor driver
-- [ ] Verify HuskyLens UART/I2C configuration
-- [ ] Implement board-specific firmware
-- [ ] Run hardware tests and publish measured results
+Python 3.10 or newer.
 
-## Run the tests
+    python -m pip install -e ".[dev]"
+    python -m pytest
 
-Python 3.10 or newer is required.
+## System flow
 
-```bash
-python -m pip install -e ".[dev]"
-python -m pytest
-```
+    Raspberry Pi Camera
+            |
+            v
+      Image / Path Region
+            |
+            v
+       Path Position
+            |
+            v
+       Lateral Error
+            |
+            v
+     Steering Controller
+            |
+            v
+       DeepCobot Drive
+            |
+            v
+       Vehicle Motion
+            |
+            +------ feedback to camera
 
-The simulation is an abstract software model. Its parameters are illustrative, not measured physical vehicle constants. Passing simulation tests does not prove real-world driving performance.
+## Evidence and engineering transparency
 
-## Safety
+This repository separates three kinds of evidence:
 
-Do not connect motors using guessed pin assignments. Confirm board, motor driver, wiring, voltage, and current limits first. Test motor outputs with wheels lifted and verify an emergency stop before any autonomous run.
+1. Historical project outcome: the team completed autonomous driving on its prepared course.
+2. Reconstructed software: the Python modules are a clean, testable reconstruction because the original source was not retained.
+3. Current automated validation: tests cover path-position extraction, confidence handling, steering bounds, fail-safe behaviour, and an abstract PID simulation.
 
-## Project documentation
+The automated tests do not replace physical vehicle measurements. No unverified speed, accuracy, lap-time, or success-rate figures are reported.
 
-- [Software architecture](docs/architecture.md)
-- [Hardware validation checklist](docs/hardware-validation.md)
+## Documentation
 
-**Build. Test. Measure. Improve.**
+- [Architecture and data flow](docs/architecture.md)
+- [Project report](docs/project-report.md)
+- [Validation and test coverage](docs/validation.md)
+
+**Build · Observe · Correct · Validate**

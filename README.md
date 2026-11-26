@@ -1,81 +1,59 @@
-# 🤖 AI Autonomous Driving Car
+# AI Autonomous Driving Car
 
-### HuskyLens-Based AI Line Tracking Autonomous Vehicle
+**Simulation-first rebuild of a HuskyLens-based line-following robotics project.**
 
-An autonomous driving car project using HuskyLens for AI-based line tracking and driving control.
+This repository separates the historical project description from newly developed and testable software. The original EIE-Makers project was described as an Arduino-based vehicle using HuskyLens for line tracking, with forward, turn, stop, and direction-correction behaviour. Its original source code and hardware records are no longer available.
 
-This project focuses on implementing stable autonomous movement, including straight driving, turning, stopping, and direction correction on curved tracks.
+The current repository is therefore a **rebuild in progress**, not a claim that the original firmware has been recovered or that new algorithms have already been validated on a physical car.
 
----
+## Project goals
 
-## 📌 Project Overview
+- Build a modular line-following control system.
+- Explore bounded PID control and recovery behaviour.
+- Validate software logic in a deterministic simulator before hardware tests.
+- Add Arduino firmware only after the exact board, motor driver, wiring, and HuskyLens communication settings are confirmed.
+- Publish reproducible tests and measured results.
 
-The goal of this project is to develop an autonomous vehicle capable of following a designated driving line using HuskyLens.
+## Repository structure
 
-A driving direction correction algorithm was applied to improve stability, particularly on tracks containing curved sections.
-
-## ✨ Key Features
-
-- **AI Line Tracking** — Line recognition using HuskyLens
-- **Straight Driving** — Autonomous forward movement
-- **Turning Control** — Direction control during turns
-- **Stop Control** — Vehicle stopping functionality
-- **Direction Correction** — Driving direction adjustment on curved tracks
-
-## ⚙️ System Components
-
-| Component | Description |
+| Path | Purpose |
 |---|---|
-| Vision Sensor | HuskyLens |
-| Vehicle Platform | Autonomous driving car |
-| Tracking Method | AI-based line tracking |
-| Control Functions | Forward, Turn, Stop |
-| Control Algorithm | Driving direction correction |
+| `simulation/` | Hardware-independent control experiments |
+| `tests/` | Automated software tests |
+| `docs/architecture.md` | System boundaries and design decisions |
+| `docs/hardware-validation.md` | Hardware identification and safe bring-up checklist |
+| `firmware/` | Reserved for board-specific embedded firmware |
 
-## 🧠 Technical Highlights
+## Current status
 
-### 1. AI-Based Line Tracking
+- [x] Repository created
+- [x] Initial project documentation
+- [x] Simulation-first architecture documented
+- [x] Initial bounded PID and abstract vehicle model
+- [x] Initial automated tests
+- [ ] Confirm exact Arduino board and motor driver
+- [ ] Verify HuskyLens UART/I2C configuration
+- [ ] Implement board-specific firmware
+- [ ] Run hardware tests and publish measured results
 
-Used HuskyLens to recognize the driving line and support autonomous vehicle movement.
+## Run the tests
 
-### 2. Driving Direction Correction
+Python 3.10 or newer is required.
 
-Applied a direction correction algorithm to improve driving stability on curved sections of the track.
+```bash
+python -m pip install -e ".[dev]"
+python -m pytest
+```
 
-### 3. Motion Control
+The simulation is an abstract software model. Its parameters are illustrative, not measured physical vehicle constants. Passing simulation tests does not prove real-world driving performance.
 
-Implemented three fundamental driving functions:
+## Safety
 
-- Forward
-- Turn
-- Stop
+Do not connect motors using guessed pin assignments. Confirm board, motor driver, wiring, voltage, and current limits first. Test motor outputs with wheels lifted and verify an emergency stop before any autonomous run.
 
-## 🔍 Challenges & Improvements
+## Project documentation
 
-**Challenge:** Maintaining stable driving direction on curved sections.
+- [Software architecture](docs/architecture.md)
+- [Hardware validation checklist](docs/hardware-validation.md)
 
-**Approach:** Applied a driving direction correction algorithm to improve vehicle movement along curved tracks.
-
-## 📷 Demonstration
-
-Project images and driving demonstration videos will be added here.
-
-## 🛠️ Future Improvements
-
-- Improve line tracking accuracy
-- Enhance curved-track driving stability
-- Optimize driving control algorithms
-- Expand autonomous driving capabilities
-
-## 👨‍💻 Project Information
-
-| Item | Details |
-|---|---|
-| Project | AI Autonomous Driving Car |
-| Program | EIE-Makers |
-| Main Sensor | HuskyLens |
-| Category | AI / Robotics / Autonomous Systems |
-
----
-
-**Build. Test. Improve.**
+**Build. Test. Measure. Improve.**

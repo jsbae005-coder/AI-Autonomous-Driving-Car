@@ -1,37 +1,26 @@
-# Hardware Discovery and Validation Checklist
+# Historical Hardware Configuration and Reproduction Notes
 
-Hardware details are currently unknown. Complete this checklist before
-connecting firmware to a physical vehicle.
+## Confirmed project configuration
 
-## Identify components
+- Robotics platform: UBION DeepCobot experimental kit
+- Visual input: Raspberry Pi camera
+- Demonstration outcome: autonomous driving on the prepared course was completed
+- Final implementation did not use HuskyLens or an ultrasonic sensor
 
-- [ ] Exact Arduino board model and revision
-- [ ] Motor driver model and rated voltage/current
-- [ ] Motor count, type, and left/right wiring
-- [ ] HuskyLens firmware/version if available
-- [ ] HuskyLens interface: UART or I2C
-- [ ] Battery chemistry, voltage, and current capability
-- [ ] Common-ground and power-regulator arrangement
-- [ ] Emergency-stop method
+## Reproduction boundary
 
-## Verify communication
+The original source code, exact wiring record, camera settings, and dated measurement logs are not available in this repository. For that reason, this page does not invent GPIO assignments, motor-driver pins, baud rates, camera resolution, or performance figures.
 
-- [ ] Confirm the selected HuskyLens protocol from its official documentation
-- [ ] Confirm baud rate or I2C address
-- [ ] Confirm packet parsing with motors disconnected
-- [ ] Handle invalid, incomplete, and stale sensor observations
+The Python control module is a hardware-independent reconstruction. It is not ready to be connected directly to motors without a verified hardware adapter.
 
-## Safe bring-up sequence
+## Before reproducing on hardware
 
-1. Inspect wiring with the battery disconnected.
-2. Power the controller and sensor without motor power.
-3. Verify sensor communication and log received observations.
-4. Test each motor output with wheels lifted and a current-limited supply.
-5. Verify motor direction and stop behaviour.
-6. Test emergency stop before closed-loop operation.
-7. Begin at low speed in a clear, controlled test area.
-8. Record repeatable trials before reporting performance.
+1. Identify the exact DeepCobot controller and motor-driver board revision.
+2. Confirm the camera model, interface, resolution, and frame rate.
+3. Verify motor wiring, voltage/current ratings, and power arrangement.
+4. Keep wheels lifted during initial actuator checks.
+5. Verify an emergency-stop mechanism before autonomous motion.
+6. Start at low speed in a clear, controlled test area.
+7. Record dated video and repeatable measurements before publishing numerical performance claims.
 
-Do not connect motors or batteries based on guessed pinouts or assumed board
-models. Do not publish performance numbers until measured on the physical
-vehicle.
+Never infer pin assignments or electrical limits from a generic example.

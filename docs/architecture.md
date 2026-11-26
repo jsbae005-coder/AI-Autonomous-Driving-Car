@@ -1,44 +1,42 @@
-# Software Architecture
+# System Architecture
 
-## Current development stage
+## 1. Overview
 
-This repository is being rebuilt as a simulation-first project. Historical
-source code and hardware photographs are unavailable. The original project
-description reports use of HuskyLens for line tracking and basic forward,
-turn, and stop behaviour, but the exact Arduino model, motor driver, wiring,
-and communication settings have not been recovered.
+The historical build used a UBION DeepCobot experimental robotics platform and a Raspberry Pi camera. Camera frames provided the visual input for path-following and autonomous driving on the prepared course.
 
-## Proposed layers
+This document describes the functional system. The Python package in this repository is a hardware-independent reconstruction of the perception-to-control boundary; it is not the original camera capture stack or motor firmware.
 
-1. **Perception** — receive and validate line observations from HuskyLens.
-2. **State estimation** — calculate normalized lateral tracking error and
-detect missing or stale observations.
-3. **Control** — compute bounded steering correction; PID is the initial
-candidate controller.
-4. **Actuation** — translate steering and speed requests into motor-driver
-commands for the verified board and driver.
-5. **Safety** — stop motors on stale sensor data, invalid commands, startup,
-or emergency-stop activation.
-6. **Telemetry** — record sensor status, error, controller output, and safety
-state for repeatable evaluation.
+## 2. Data flow
 
-## Current implementation
+1. Image acquisition: Raspberry Pi camera provides a frame.
+2. Path perception: image processing isolates the path region and produces a binary mask.
+3. Position estimation: the lower image region estimates the horizontal path centroid.
+4. Error calculation: centroid position is normalized relative to image center.
+5. Steering control: bounded PID control converts lateral error into a steering correction.
+6. Vehicle actuation: the platform drive system applies the requested motion.
+7. Feedback: the next camera frame closes the loop.
 
-- simulation/line_following.py: abstract lateral-error model and bounded PID.
-- tests/test_line_following.py: initial unit tests for controller limits and
-  simulation behaviour.
+## 3. Reconstructed software modules
 
-## Hardware boundary
+| Module | Responsibility |
+|---|---|
+| control.line_follower | Path-mask centroid, confidence, bounded steering command, fail-safe state |
+| simulation.line_following | Abstract vehicle model and PID controller |
+| tests | Deterministic unit tests for perception and control behaviour |
 
-No Arduino firmware is claimed to be hardware-ready yet. Before firmware is
-written, confirm the exact board, motor driver, motor wiring, HuskyLens
-protocol (UART or I2C), baud rate/address, and power arrangement. Pin numbers
-and motor polarity must never be guessed.
+## 4. Control and safety decisions
 
-## Engineering principles
+- Normalize path position to [-1, 1] so control logic is independent of image width.
+- Use the lower image region to prioritize the path nearest the vehicle.
+- Bound steering output to prevent unbounded control requests.
+- Reduce commanded speed when perception confidence is weak.
+- Return a zero-speed command when the path is missing or confidence is below threshold.
+- Reset accumulated PID state after line loss to avoid stale controller state.
 
-- Keep hardware I/O separate from control logic.
-- Validate sensor data before using it.
-- Bound all actuator commands.
-- Prefer a safe stop over continuing with invalid or stale perception.
-- Record assumptions and distinguish simulated results from measured results.
+## 5. Hardware integration boundary
+
+The repository does not assume undocumented GPIO pins, motor-driver wiring, PWM frequencies, or camera settings. These must be taken from the actual DeepCobot kit documentation and verified hardware configuration before connecting the reconstructed controller to a physical platform.
+
+## 6. Limitations
+
+The path mask is an input contract. Camera calibration, image segmentation, perspective correction, and frame acquisition are not represented as recovered historical code. The abstract simulator is useful for deterministic software experiments but is not a calibrated vehicle dynamics model.

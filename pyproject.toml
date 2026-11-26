@@ -1,0 +1,13 @@
+[project]
+name = "ai-autonomous-driving-car"
+version = "0.1.0"
+description = "Simulation-first development foundation for a HuskyLens and Arduino line-following robot."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
